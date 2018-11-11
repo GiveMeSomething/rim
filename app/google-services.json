@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "997149811255",
+    "firebase_url": "https://wifitoarduino.firebaseio.com",
+    "project_id": "wifitoarduino",
+    "storage_bucket": "wifitoarduino.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997149811255:android:4b34cac9b441c725",
+        "android_client_info": {
+          "package_name": "com.example.asus.rim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997149811255-pm7p7epsjmht776i7ceqo2tijt5hbnlr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.asus.rim",
+            "certificate_hash": "91ad04767696b8d99a97ab892272d596a9db3618"
+          }
+        },
+        {
+          "client_id": "997149811255-uub42o71oll7q90dmua0boqmsjprbfbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwZCnETuX7RvyKXiM90mJIxdQ74wJaFsc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997149811255-uub42o71oll7q90dmua0boqmsjprbfbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
