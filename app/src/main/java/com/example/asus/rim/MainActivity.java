@@ -33,5 +33,19 @@ public class MainActivity extends AppCompatActivity {
         offButton = findViewById(R.id.offButton);
 
         status = findViewById(R.id.status);
+
+        light1status.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                status.setText(value);
+                Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getApplicationContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
