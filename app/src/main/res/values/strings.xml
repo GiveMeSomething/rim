@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RIM</string>
+    <string name="status_text">STATUS</string>
 </resources>
