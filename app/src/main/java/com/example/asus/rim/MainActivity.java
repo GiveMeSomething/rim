@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
         micButton.setResultsListener(new AIButton.AIButtonListener() {
             @Override
             public void onResult(AIResponse result) {
-                
+                //result.getResult().getResolvedQuery() để lấy ra câu nói
+                status.setText(result.getResult().getResolvedQuery());
             }
 
             @Override
