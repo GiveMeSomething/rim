@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,14 +37,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!isOnline()) {
-            displayDataSetting(MainActivity.this).show();
-        }
+        checkConnection();
 
         onButton = findViewById(R.id.onButton);
         offButton = findViewById(R.id.offButton);
         status = findViewById(R.id.status);
 
+        onButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkConnection();
+                light1status.setValue("ON");
+            }
+        });
+    }
+    private void checkConnection() {
+        if (!isOnline()) {
+            displayDataSetting(MainActivity.this).show();
+        }
     }
 
     private boolean isOnline() {
