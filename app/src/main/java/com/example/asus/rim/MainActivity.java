@@ -45,28 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
         checkConnection();
 
-        onButton = findViewById(R.id.onButton);
-        offButton = findViewById(R.id.offButton);
-        status = findViewById(R.id.status);
-
-        onButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkConnection();
-                light1status.setValue("ON");
-                updateValueToDatabase();
-            }
-        });
-
-        offButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkConnection();
-                light1status.setValue("OFF");
-                updateValueToDatabase();
-            }
-        });
-
         final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration("c71225c7a4954dd580946ec46855bc30",
                 AIConfiguration.SupportedLanguages.English,
                 ai.api.android.AIConfiguration.RecognitionEngine.System);
@@ -129,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String value = dataSnapshot.getValue(String.class);
-                    status.setText(value);
                     Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
                 }
 
