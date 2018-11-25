@@ -50,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
                 light1status.setValue("ON");
             }
         });
+
+        offButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkConnection();
+                light1status.setValue("OFF");
+            }
+        });
     }
     private void checkConnection() {
         if (!isOnline()) {
