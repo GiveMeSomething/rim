@@ -21,6 +21,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import ai.api.AIConfiguration;
+import ai.api.model.AIError;
+import ai.api.model.AIResponse;
+import ai.api.ui.AIButton;
+
 public class MainActivity extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -30,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button onButton;
     Button offButton;
+    AIButton micButton;
     TextView status;
 
     @Override
@@ -58,6 +64,29 @@ public class MainActivity extends AppCompatActivity {
                 checkConnection();
                 light1status.setValue("OFF");
                 updateValueToDatabase();
+            }
+        });
+
+        final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration("c71225c7a4954dd580946ec46855bc30",
+                AIConfiguration.SupportedLanguages.English,
+                ai.api.android.AIConfiguration.RecognitionEngine.System);
+
+        micButton = findViewById(R.id.micButton);
+        micButton.initialize(config);
+        micButton.setResultsListener(new AIButton.AIButtonListener() {
+            @Override
+            public void onResult(AIResponse result) {
+                
+            }
+
+            @Override
+            public void onError(AIError error) {
+
+            }
+
+            @Override
+            public void onCancelled() {
+
             }
         });
     }
