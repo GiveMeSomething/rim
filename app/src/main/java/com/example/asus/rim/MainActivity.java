@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void checkConnection() {
         if (!isOnline()) {
             displayDataSetting(MainActivity.this).show();
