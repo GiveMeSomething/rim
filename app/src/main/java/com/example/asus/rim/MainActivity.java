@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     final DatabaseReference light1status = databaseReference.child("light1").child("status");
 
-    Button onButton;
-    Button offButton;
     AIButton micButton;
     TextView status;
 

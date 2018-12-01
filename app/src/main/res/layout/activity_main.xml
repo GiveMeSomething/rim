@@ -24,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/conversation"
         app:layout_constraintEnd_toStartOf="@+id/sendButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/sendButton"/>
+        app:layout_constraintRight_toLeftOf="@+id/sendButton" />
 
     <ImageButton
         android:id="@+id/sendButton"
@@ -40,8 +40,8 @@
     <ai.api.ui.AIButton
         android:id="@+id/micButton"
         style="@style/ApiAi.Microphone"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
