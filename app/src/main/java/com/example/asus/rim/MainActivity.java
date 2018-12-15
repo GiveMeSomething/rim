@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +20,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import ai.api.AIConfiguration;
+import ai.api.AIServiceException;
+import ai.api.android.AIDataService;
 import ai.api.model.AIError;
+import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.ui.AIButton;
 
@@ -32,8 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
     final DatabaseReference light1status = databaseReference.child("light1").child("status");
 
+    final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration("c71225c7a4954dd580946ec46855bc30",
+            AIConfiguration.SupportedLanguages.English,
+            ai.api.android.AIConfiguration.RecognitionEngine.System);
+
     AIButton micButton;
-    TextView status;
+    TextView responseText;
+
+    String requestSpeech;
+    String resultSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,22 +51,24 @@ public class MainActivity extends AppCompatActivity {
 
         checkConnection();
 
-        final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration("c71225c7a4954dd580946ec46855bc30",
-                AIConfiguration.SupportedLanguages.English,
-                ai.api.android.AIConfiguration.RecognitionEngine.System);
-
         micButton = findViewById(R.id.micButton);
+        responseText = findViewById(R.id.aiResponse);
+
         micButton.initialize(config);
         micButton.setResultsListener(new AIButton.AIButtonListener() {
             @Override
             public void onResult(AIResponse result) {
-                //result.getResult().getResolvedQuery() để lấy ra câu nói
-                status.setText(result.getResult().getResolvedQuery());
+                if (result.getResult().getResolvedQuery().equals("")) {
+                    Toast.makeText(MainActivity.this, "Say something", Toast.LENGTH_SHORT).show();
+                } else {
+                    requestSpeech = result.getResult().getResolvedQuery();
+                    showResult(requestSpeech);
+                }
             }
 
             @Override
             public void onError(AIError error) {
-
+                Toast.makeText(MainActivity.this, "Could you say that again ?", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -69,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkConnection() {
         if (!isOnline()) {
-            displayDataSetting(MainActivity.this).show();
+            displayNetworkSetting(MainActivity.this).show();
         }
     }
 
@@ -79,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
-    private AlertDialog displayDataSetting(Context context) {
+    private AlertDialog displayNetworkSetting(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("No Internet");
         builder.setPositiveButton("Wifi", new DialogInterface.OnClickListener() {
@@ -115,4 +126,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showResult(String request) {
+        final AIDataService aiDataService = new AIDataService(MainActivity.this, config);
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery(request);
+
+        Thread getSpeech = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final AIResponse aiResponse = aiDataService.request(aiRequest);
+                    resultSpeech = aiResponse.getResult().getFulfillment().getSpeech();
+                } catch (AIServiceException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        getSpeech.start();
+
+        if (resultSpeech != null) {
+            if (!resultSpeech.equals("")) {
+                responseText.setText(resultSpeech);
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "Can you say that again", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
