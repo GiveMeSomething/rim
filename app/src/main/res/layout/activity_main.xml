@@ -19,9 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:paddingStart="5dp"
             android:paddingTop="10dp"
             android:paddingEnd="5dp"
-            android:paddingStart="5dp"
             android:paddingBottom="10dp">
 
             <View
