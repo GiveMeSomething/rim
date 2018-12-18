@@ -30,4 +30,10 @@ public class AIResponseProcessor {
     public String getTargetObject() {
         return targetObject;
     }
+
+    private void process() {
+        Result result = aiResponse.getResult();
+        Metadata metadata = result.getMetadata();
+        HashMap<String, JsonElement> parameters = result.getParameters();
+    }
 }
