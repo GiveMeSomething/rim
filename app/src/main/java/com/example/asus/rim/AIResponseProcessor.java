@@ -35,5 +35,24 @@ public class AIResponseProcessor {
         Result result = aiResponse.getResult();
         Metadata metadata = result.getMetadata();
         HashMap<String, JsonElement> parameters = result.getParameters();
+        String[] data = getDataFromMetadata(metadata);
+
+        section = data[0];
+        usage = data[1];
+        targetObject = getDataFromMap(parameters);
+    }
+
+    private String getDataFromMap(HashMap<String, JsonElement> data) {
+        for (String key : keyPackage) {
+            if (data.get(key) != null) {
+                return data.get(key).getAsString();
+            }
+        }
+        return null;
+    }
+
+    //Intent name will be in form : section.usage
+    private String[] getDataFromMetadata(Metadata metadata) {
+        return metadata.getIntentName().split(".");
     }
 }
