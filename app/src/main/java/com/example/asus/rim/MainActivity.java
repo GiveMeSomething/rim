@@ -32,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReference();
 
-    final DatabaseReference light1status = databaseReference.child("light1").child("status");
+    final DatabaseReference light_test_status = databaseReference.child("light").child("status");
+    final DatabaseReference light_desk_status = databaseReference.child("light_desk").child("status");
+    final DatabaseReference light_bedroom_status = databaseReference.child("light_bedroom").child("status");
 
     final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration("c71225c7a4954dd580946ec46855bc30",
             AIConfiguration.SupportedLanguages.English,
@@ -109,23 +111,6 @@ public class MainActivity extends AppCompatActivity {
         return builder.create();
     }
 
-    private void updateValueToDatabase() {
-        if (isOnline()) {
-            light1status.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String value = dataSnapshot.getValue(String.class);
-                    Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(getApplicationContext(), "Failed to fetch data", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
     private void showResult(String request) {
         final AIDataService aiDataService = new AIDataService(MainActivity.this, config);
         final AIRequest aiRequest = new AIRequest();
@@ -151,5 +136,26 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(MainActivity.this, "Can you say that again", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void updateValueToDatabase(String targetObjectName, String status) {
+        if (isOnline()) {
+
+        }
+    }
+
+    private String getValueFromDatabase(String targetObjectName) {
+        if (isOnline()) {
+
+        }
+        return null;
+    }
+
+    private String createTargetObjectName(String targetObject, String location) {
+        return null;
+    }
+
+    private void responseHandler(String section, String usage, String targetObject) {
+
     }
 }
