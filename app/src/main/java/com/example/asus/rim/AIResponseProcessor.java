@@ -13,6 +13,7 @@ public class AIResponseProcessor {
     private String section;
     private String usage;
     private String targetObject;
+    private String text;
     private String[] keyPackage = {"Applications"};
 
     public AIResponseProcessor(AIResponse aiResponse) {
@@ -29,6 +30,10 @@ public class AIResponseProcessor {
 
     public String getTargetObject() {
         return targetObject;
+    }
+
+    public String getText() {
+        return aiResponse.getResult().getFulfillment().getSpeech();
     }
 
     private void process() {
