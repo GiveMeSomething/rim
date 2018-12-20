@@ -121,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     final AIResponse aiResponse = aiDataService.request(aiRequest);
-                    resultSpeech = aiResponse.getResult().getFulfillment().getSpeech();
+                    AIResponseProcessor processor = new AIResponseProcessor(aiResponse);
+                    resultSpeech = processor.getText();
                 } catch (AIServiceException e) {
                     e.printStackTrace();
                 }
@@ -148,9 +149,7 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private void responseHandler(String section, String usage, String targetObject) {
-        if (section.equals("conversation")) {
+    private void responseHandler(AIResponseProcessor aiResponseProcessor) {
 
-        }
     }
 }

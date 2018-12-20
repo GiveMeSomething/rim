@@ -18,6 +18,7 @@ public class AIResponseProcessor {
 
     public AIResponseProcessor(AIResponse aiResponse) {
         this.aiResponse = aiResponse;
+        process();
     }
 
     public String getSection() {
@@ -33,7 +34,7 @@ public class AIResponseProcessor {
     }
 
     public String getText() {
-        return aiResponse.getResult().getFulfillment().getSpeech();
+        return text;
     }
 
     private void process() {
@@ -45,6 +46,7 @@ public class AIResponseProcessor {
         section = data[0];
         usage = data[1];
         targetObject = getDataFromMap(parameters);
+        text = result.getFulfillment().getSpeech();
     }
 
     private String getDataFromMap(HashMap<String, JsonElement> data) {
