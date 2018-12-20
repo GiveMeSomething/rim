@@ -121,8 +121,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     final AIResponse aiResponse = aiDataService.request(aiRequest);
-                    AIResponseProcessor processor = new AIResponseProcessor(aiResponse);
-                    resultSpeech = processor.getText();
+                    resultSpeech = aiResponse.getResult().getFulfillment().getSpeech();
                 } catch (AIServiceException e) {
                     e.printStackTrace();
                 }
@@ -139,17 +138,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateValueToDatabase(String targetObjectName, String status) {
-        if (isOnline()) {
-
-        }
-    }
-
-    private String createTargetObjectName(String targetObject, String location) {
-        return null;
-    }
-
-    private void responseHandler(AIResponseProcessor aiResponseProcessor) {
-
-    }
+//    private void updateValueToDatabase(String targetObjectName, String status) {
+//        if (isOnline()) {
+//
+//        }
+//    }
+//
+//    private String createTargetObjectName(String targetObject, String location) {
+//        return null;
+//    }
+//
+//    private void responseHandler(AIResponseProcessor aiResponseProcessor) {
+//
+//    }
 }
