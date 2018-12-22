@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -78,6 +79,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled() {
 
+            }
+        });
+
+        chatBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestSpeech = chatBox.getText().toString();
+                showResult(requestSpeech);
             }
         });
     }
