@@ -14,7 +14,6 @@ public class AIResponseProcessor {
     private String usage;
     private String targetObject;
     private String text;
-    private String[] keyPackage = {"Applications", "Locations"};
 
     public AIResponseProcessor(AIResponse aiResponse) {
         this.aiResponse = aiResponse;
@@ -45,15 +44,13 @@ public class AIResponseProcessor {
 
         section = data[0];
         usage = data[1];
-        targetObject = getDataFromMap(parameters);
+        targetObject = getDataFromMap(parameters, "Applications");
         text = result.getFulfillment().getSpeech();
     }
 
-    private String getDataFromMap(HashMap<String, JsonElement> data) {
-        for (String key : keyPackage) {
-            if (data.get(key) != null) {
-                return data.get(key).getAsString();
-            }
+    private String getDataFromMap(HashMap<String, JsonElement> data, String key) {
+        if (data.get(key) != null) {
+            return data.get(key).getAsString();
         }
         return null;
     }
