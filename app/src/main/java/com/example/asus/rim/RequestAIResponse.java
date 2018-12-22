@@ -25,9 +25,6 @@ public class RequestAIResponse extends Thread {
     }
 
     public AIResponse getAiResponse() {
-        if (aiResponse != null) {
-            return aiResponse;
-        }
-        return null;
+        return aiResponse;
     }
 }
