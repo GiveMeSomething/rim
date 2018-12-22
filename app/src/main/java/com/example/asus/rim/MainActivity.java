@@ -9,6 +9,8 @@ import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     AIButton micButton;
     TextView responseText;
+    EditText chatBox;
+    ImageButton sendButton;
 
     String requestSpeech;
     String resultSpeech;
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         micButton = findViewById(R.id.micButton);
         responseText = findViewById(R.id.aiResponse);
+        chatBox = findViewById(R.id.chatBox);
+        sendButton = findViewById(R.id.sendButton);
 
         micButton.initialize(config);
         micButton.setResultsListener(new AIButton.AIButtonListener() {
@@ -117,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     final AIResponse aiResponse = aiDataService.request(aiRequest);
-                    resultSpeech = aiResponse.getResult().getFulfillment().getSpeech();
+                    AIResponseProcessor aiResponseProcessor = new AIResponseProcessor(aiResponse);
+                    resultSpeech = aiResponseProcessor.getText();
                 } catch (AIServiceException e) {
                     e.printStackTrace();
                 }

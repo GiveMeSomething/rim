@@ -14,7 +14,7 @@ public class AIResponseProcessor {
     private String usage;
     private String targetObject;
     private String text;
-    private String[] keyPackage = {"Applications"};
+    private String[] keyPackage = {"Applications", "Locations"};
 
     public AIResponseProcessor(AIResponse aiResponse) {
         this.aiResponse = aiResponse;
