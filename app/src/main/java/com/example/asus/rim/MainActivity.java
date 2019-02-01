@@ -47,9 +47,6 @@ public class MainActivity extends AppCompatActivity {
     String requestSpeech;
     String resultSpeech;
 
-    String currentApplicationName;
-    String applicationLocation;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,17 +124,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void showResult(String request) {
         final AIDataService aiDataService = new AIDataService(MainActivity.this, config);
-
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery(request);
 
-        RequestAIResponse getResponse = new RequestAIResponse(aiDataService, aiRequest);
-        getResponse.start();
-
-        final AIResponse aiResponse = getResponse.getAiResponse();
-
-        AIResponseProcessor aiResponseProcessor = new AIResponseProcessor(aiResponse);
-        resultSpeech = aiResponseProcessor.getText();
+        Thread getSpeech = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final AIResponse aiResponse = aiDataService.request(aiRequest);
+                    AIResponseProcessor aiResponseProcessor = new AIResponseProcessor(aiResponse);
+                    resultSpeech = aiResponseProcessor.getText();
+                } catch (AIServiceException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        getSpeech.start();
 
         if (resultSpeech != null) {
             if (!resultSpeech.equals("")) {
