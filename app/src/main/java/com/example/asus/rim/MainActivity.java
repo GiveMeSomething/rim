@@ -12,14 +12,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.scaledrone.lib.Listener;
 import com.scaledrone.lib.Room;
 import com.scaledrone.lib.RoomListener;
 import com.scaledrone.lib.Scaledrone;
+import com.scaledrone.lib.Member;
+
+import java.util.ArrayList;
 
 import ai.api.AIConfiguration;
 import ai.api.AIServiceException;
@@ -41,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
     AIButton micButton;
     EditText chatBox;
     ImageButton sendButton;
+    ListView messageList;
 
     String requestSpeech;
     String resultSpeech;
@@ -48,6 +57,25 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
     private String channelID = "ePdCTlTAQ0mYPDZ5";
     private String roomName = "private-room";
     private Scaledrone scaledrone;
+
+    // Successfully connected to Scaledrone room
+    @Override
+    public void onOpen(Room room) {
+        System.out.println("Conneted to room");
+    }
+
+    // Connecting to Scaledrone room failed
+    @Override
+    public void onOpenFailure(Room room, Exception ex) {
+
+    }
+
+    // Received a message from Scaledrone room
+    @Override
+    public void onMessage(Room room, com.scaledrone.lib.Message receivedMessage) {
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
         micButton = findViewById(R.id.micButton);
         chatBox = findViewById(R.id.chatBox);
         sendButton = findViewById(R.id.sendButton);
+        messageList = findViewById(R.id.messageList);
     }
 
     @Override
@@ -69,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
         final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration(KEY_AI,
                 AIConfiguration.SupportedLanguages.English,
                 ai.api.android.AIConfiguration.RecognitionEngine.System);
+        final MemberData data = new MemberData("super-user");
+        final MessageAdapter adapter = new MessageAdapter(MainActivity.this);
 
         micButton.initialize(config);
         micButton.setResultsListener(new AIButton.AIButtonListener() {
@@ -78,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
                     Toast.makeText(MainActivity.this, "Say something", Toast.LENGTH_SHORT).show();
                 } else {
                     requestSpeech = result.getResult().getResolvedQuery();
+                    Message message = new Message(requestSpeech, data, true);
+                    adapter.add(message);
                     showResultFromAIDataRequest(requestSpeech);
                 }
             }
@@ -101,28 +134,13 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
                     Toast.makeText(MainActivity.this, "Can't send null message", Toast.LENGTH_LONG).show();
                 } else {
                     showResultFromAIDataRequest(chatboxMessage);
+                    Message message = new Message(chatboxMessage, data, true);
+                    adapter.add(message);
                 }
-                chatBox.setText("");
+                chatBox.getText().clear();
             }
         });
-    }
-
-    // Successfully connected to Scaledrone room
-    @Override
-    public void onOpen(Room room) {
-        System.out.println("Conneted to room");
-    }
-
-    // Connecting to Scaledrone room failed
-    @Override
-    public void onOpenFailure(Room room, Exception ex) {
-
-    }
-
-    // Received a message from Scaledrone room
-    @Override
-    public void onMessage(Room room, com.scaledrone.lib.Message receivedMessage) {
-
+        messageList.setAdapter(adapter);
     }
 
     private void checkConnection() {
