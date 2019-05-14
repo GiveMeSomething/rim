@@ -35,10 +35,6 @@ public class MainActivity extends AppCompatActivity {
     final DatabaseReference light_desk = databaseReference.child("light_desk");
     final DatabaseReference light_bedroom = databaseReference.child("light_bedroom");
 
-    final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration("c71225c7a4954dd580946ec46855bc30",
-            AIConfiguration.SupportedLanguages.English,
-            ai.api.android.AIConfiguration.RecognitionEngine.System);
-
     AIButton micButton;
     TextView responseText;
     EditText chatBox;
