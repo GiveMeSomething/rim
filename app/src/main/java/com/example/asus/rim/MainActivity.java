@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         final String KEY_AI = getResources().getString(R.string.key_ai);
-
         final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration(KEY_AI,
                 AIConfiguration.SupportedLanguages.English,
                 ai.api.android.AIConfiguration.RecognitionEngine.System);
