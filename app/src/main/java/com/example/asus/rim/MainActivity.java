@@ -54,37 +54,6 @@ public class MainActivity extends AppCompatActivity {
         responseText = findViewById(R.id.aiResponse);
         chatBox = findViewById(R.id.chatBox);
         sendButton = findViewById(R.id.sendButton);
-
-        micButton.initialize(config);
-        micButton.setResultsListener(new AIButton.AIButtonListener() {
-            @Override
-            public void onResult(AIResponse result) {
-                if (result.getResult().getResolvedQuery().equals("")) {
-                    Toast.makeText(MainActivity.this, "Say something", Toast.LENGTH_SHORT).show();
-                } else {
-                    requestSpeech = result.getResult().getResolvedQuery();
-                    showResult(requestSpeech);
-                }
-            }
-
-            @Override
-            public void onError(AIError error) {
-                Toast.makeText(MainActivity.this, "Could you say that again ?", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled() {
-
-            }
-        });
-
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestSpeech = chatBox.getText().toString();
-                showResult(requestSpeech);
-            }
-        });
     }
 
     @Override
@@ -92,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         final String KEY_AI = getResources().getString(R.string.key_ai);
-
         final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration(KEY_AI,
                 AIConfiguration.SupportedLanguages.English,
                 ai.api.android.AIConfiguration.RecognitionEngine.System);
@@ -165,7 +133,11 @@ public class MainActivity extends AppCompatActivity {
         return builder.create();
     }
 
-    private void showResult(String request) {
+    private void showResultFromAIDataRequest(String request) {
+        final String KEY_AI = getResources().getString(R.string.key_ai);
+        final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration(KEY_AI,
+                AIConfiguration.SupportedLanguages.English,
+                ai.api.android.AIConfiguration.RecognitionEngine.System);
         final AIDataService aiDataService = new AIDataService(MainActivity.this, config);
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery(request);
@@ -175,22 +147,25 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     final AIResponse aiResponse = aiDataService.request(aiRequest);
-                    AIResponseProcessor aiResponseProcessor = new AIResponseProcessor(aiResponse);
-                    resultSpeech = aiResponseProcessor.getText();
+                    resultSpeech = aiResponse.getResult().getFulfillment().getSpeech();
+                    if (resultSpeech != null) {
+                        if (!resultSpeech.equals("")) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    responseText.setText(resultSpeech);
+                                }
+                            });
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "Can you say that again", Toast.LENGTH_SHORT).show();
+                    }
                 } catch (AIServiceException e) {
                     e.printStackTrace();
                 }
             }
         });
         getSpeech.start();
-
-        if (resultSpeech != null) {
-            if (!resultSpeech.equals("")) {
-                responseText.setText(resultSpeech);
-            }
-        } else {
-            Toast.makeText(MainActivity.this, "Can you say that again", Toast.LENGTH_SHORT).show();
-        }
     }
 
 //    private void updateValueToDatabase(String targetObjectName, String status) {
