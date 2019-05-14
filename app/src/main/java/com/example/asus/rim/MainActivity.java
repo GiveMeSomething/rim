@@ -31,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReference();
 
-    final DatabaseReference light_test = databaseReference.child("light");
-    final DatabaseReference light_desk = databaseReference.child("light_desk");
-    final DatabaseReference light_bedroom = databaseReference.child("light_bedroom");
+    final DatabaseReference LIGHT_TEST = databaseReference.child("light");
+    final DatabaseReference LIGHT_DESK = databaseReference.child("light_desk");
+    final DatabaseReference LIGHT_BEDROOM = databaseReference.child("light_bedroom");
 
     AIButton micButton;
     TextView responseText;
@@ -83,6 +83,53 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 requestSpeech = chatBox.getText().toString();
                 showResult(requestSpeech);
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        final String KEY_AI = getResources().getString(R.string.key_ai);
+
+        final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration(KEY_AI,
+                AIConfiguration.SupportedLanguages.English,
+                ai.api.android.AIConfiguration.RecognitionEngine.System);
+
+        micButton.initialize(config);
+        micButton.setResultsListener(new AIButton.AIButtonListener() {
+            @Override
+            public void onResult(AIResponse result) {
+                if (result.getResult().getResolvedQuery().equals("")) {
+                    Toast.makeText(MainActivity.this, "Say something", Toast.LENGTH_SHORT).show();
+                } else {
+                    requestSpeech = result.getResult().getResolvedQuery();
+                    showResultFromAIDataRequest(requestSpeech);
+                }
+            }
+
+            @Override
+            public void onError(AIError error) {
+                Toast.makeText(MainActivity.this, "Could you say that again ?", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled() {
+
+            }
+        });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String chatboxMessage = chatBox.getText().toString();
+                if (chatboxMessage.equals("")) {
+                    Toast.makeText(MainActivity.this, "Can't send null message", Toast.LENGTH_LONG).show();
+                } else {
+                    showResultFromAIDataRequest(chatboxMessage);
+                }
+                chatBox.setText("");
             }
         });
     }
