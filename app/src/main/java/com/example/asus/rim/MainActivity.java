@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.scaledrone.lib.Room;
+import com.scaledrone.lib.RoomListener;
+import com.scaledrone.lib.Scaledrone;
 
 import ai.api.AIConfiguration;
 import ai.api.AIServiceException;
@@ -26,7 +29,7 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.ui.AIButton;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RoomListener {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReference();
@@ -36,12 +39,15 @@ public class MainActivity extends AppCompatActivity {
     final DatabaseReference LIGHT_BEDROOM = databaseReference.child("light_bedroom");
 
     AIButton micButton;
-    TextView responseText;
     EditText chatBox;
     ImageButton sendButton;
 
     String requestSpeech;
     String resultSpeech;
+
+    private String channelID = "ePdCTlTAQ0mYPDZ5";
+    private String roomName = "private-room";
+    private Scaledrone scaledrone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         checkConnection();
 
         micButton = findViewById(R.id.micButton);
-        responseText = findViewById(R.id.aiResponse);
         chatBox = findViewById(R.id.chatBox);
         sendButton = findViewById(R.id.sendButton);
     }
@@ -100,6 +105,24 @@ public class MainActivity extends AppCompatActivity {
                 chatBox.setText("");
             }
         });
+    }
+
+    // Successfully connected to Scaledrone room
+    @Override
+    public void onOpen(Room room) {
+        System.out.println("Conneted to room");
+    }
+
+    // Connecting to Scaledrone room failed
+    @Override
+    public void onOpenFailure(Room room, Exception ex) {
+
+    }
+
+    // Received a message from Scaledrone room
+    @Override
+    public void onMessage(Room room, com.scaledrone.lib.Message receivedMessage) {
+
     }
 
     private void checkConnection() {
@@ -153,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    responseText.setText(resultSpeech);
+
                                 }
                             });
                         }
