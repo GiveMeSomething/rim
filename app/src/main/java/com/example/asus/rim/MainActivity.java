@@ -12,22 +12,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.scaledrone.lib.Listener;
-import com.scaledrone.lib.Room;
-import com.scaledrone.lib.RoomListener;
-import com.scaledrone.lib.Scaledrone;
-import com.scaledrone.lib.Member;
-
-import java.util.ArrayList;
 
 import ai.api.AIConfiguration;
 import ai.api.AIServiceException;
@@ -37,7 +27,7 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.ui.AIButton;
 
-public class MainActivity extends AppCompatActivity implements RoomListener {
+public class MainActivity extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReference();
@@ -50,32 +40,10 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
     EditText chatBox;
     ImageButton sendButton;
     ListView messageList;
+    LinearLayout chatArea;
 
     String requestSpeech;
     String resultSpeech;
-
-    private String channelID = "ePdCTlTAQ0mYPDZ5";
-    private String roomName = "private-room";
-    private Scaledrone scaledrone;
-
-    // Successfully connected to Scaledrone room
-    @Override
-    public void onOpen(Room room) {
-        System.out.println("Conneted to room");
-    }
-
-    // Connecting to Scaledrone room failed
-    @Override
-    public void onOpenFailure(Room room, Exception ex) {
-
-    }
-
-    // Received a message from Scaledrone room
-    @Override
-    public void onMessage(Room room, com.scaledrone.lib.Message receivedMessage) {
-
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +55,11 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
         micButton = findViewById(R.id.micButton);
         chatBox = findViewById(R.id.chatBox);
         sendButton = findViewById(R.id.sendButton);
+        chatArea = findViewById(R.id.linearLayoutChatBox);
         messageList = findViewById(R.id.messageList);
+
+        messageList.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
+        messageList.setStackFromBottom(false);
     }
 
     @Override
@@ -111,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
                     requestSpeech = result.getResult().getResolvedQuery();
                     Message message = new Message(requestSpeech, data, true);
                     adapter.add(message);
-                    showResultFromAIDataRequest(requestSpeech);
+                    showResultFromAIDataRequest(requestSpeech, adapter);
                 }
             }
 
@@ -133,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
                 if (chatboxMessage.equals("")) {
                     Toast.makeText(MainActivity.this, "Can't send null message", Toast.LENGTH_LONG).show();
                 } else {
-                    showResultFromAIDataRequest(chatboxMessage);
+                    showResultFromAIDataRequest(chatboxMessage, adapter);
                     Message message = new Message(chatboxMessage, data, true);
                     adapter.add(message);
                 }
@@ -174,13 +146,15 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
         return builder.create();
     }
 
-    private void showResultFromAIDataRequest(String request) {
+    private void showResultFromAIDataRequest(String request, final MessageAdapter adapter) {
         final String KEY_AI = getResources().getString(R.string.key_ai);
         final ai.api.android.AIConfiguration config = new ai.api.android.AIConfiguration(KEY_AI,
                 AIConfiguration.SupportedLanguages.English,
                 ai.api.android.AIConfiguration.RecognitionEngine.System);
         final AIDataService aiDataService = new AIDataService(MainActivity.this, config);
         final AIRequest aiRequest = new AIRequest();
+
+        final MemberData aiMemberData = new MemberData("RIM", R.drawable.avatar);
         aiRequest.setQuery(request);
 
         Thread getSpeech = new Thread(new Runnable() {
@@ -194,7 +168,8 @@ public class MainActivity extends AppCompatActivity implements RoomListener {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-
+                                    Message aiMessage = new Message(resultSpeech, aiMemberData, false);
+                                    adapter.add(aiMessage);
                                 }
                             });
                         }
